@@ -4,7 +4,6 @@ import TypeDef._
 
 case class GaleShapleyState( prefM: Pref, prefW: Pref, alloc: Alloc ) {
 
-  def is_stable: Boolean = prefM == prefMp && matches == Map( )
   def matches: Alloc = {
     choices.toList
       .filter( x => x._2.nonEmpty )
@@ -38,4 +37,6 @@ case class GaleShapleyState( prefM: Pref, prefW: Pref, alloc: Alloc ) {
         .filter( x => hunters.contains( x._1 ) ).toList
         .map( x => x._1 -> x._2.tail ).toMap
   }
+
+  def is_stable: Boolean = prefM == prefMp && matches == Map( )
 }
