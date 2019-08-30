@@ -20,11 +20,16 @@ case class GaleShapleyState( prefM: Pref, prefW: Pref, alloc: Alloc ) {
       .toMap
   }
 
-  val choices: Queue = queue.toList.map( x => (x._1, x._2 ++ alloc.get( x._1 )) ).toMap
+  val choices: Queue = {
+    queue.toList
+      .map( x => (x._1, x._2 ++ alloc.get( x._1 )) ) // Add current allocation to the choice set
+      .map( x => x._1 -> x._2.toSet.intersect( prefW( x._1 ).toSet ).toList ) // restrict queue valid proponents
+      .toMap
+  }
 
   val matches: Alloc = {
     choices.toList
-      .map( x => x._1 -> x._2.toSet.intersect( prefW( x._1 ).toSet ).toList ) // restrict queue valid proponents
+      .filter( x => x._2.nonEmpty )
       .map( x => x._1 -> prefW( x._1 ).filter( y => x._2.contains( y ) ).head ) // choose favorite proponent
       .filter( x => !alloc.toList.contains( x ) ) // Filter current allocations.
       .toMap
