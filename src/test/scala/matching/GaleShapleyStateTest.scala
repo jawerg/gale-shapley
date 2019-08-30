@@ -1,9 +1,10 @@
+package matching
+
 import org.scalatest.FunSuite
-import matching.GaleShapleyState
 import matching.TypeDef._
 
 class GaleShapleyStateTest extends FunSuite {
-  test( "GaleShapleyState.matches" ) {
+  test( "Trivial one-to-one match" ) {
     assert( GaleShapleyState( Map( 1 -> List( 1 ) ), Map( 1 -> List( 1 ) ), Map( ) ).matches === Map( 1 -> 1 ) )
   }
 
