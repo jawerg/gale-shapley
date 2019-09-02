@@ -12,4 +12,10 @@ object TypeDef {
 
   // Matches are allocations of Girls to Boys.
   type Alloc = Map[ PID, PID ] // Allocation
+
+  // Define Types for String representations.
+  type Input = Map[ String, List[ String ] ]
+  type Encoder = Map[ String, PID ]
+  type Decoder = Map[ PID, String ]
+
 }
