@@ -76,7 +76,7 @@ case class GaleShapleyState( prefM: PMap, prefW: PMap, alloc: Alloc ) {
         .toMap
   }
 
-  def allocp: Alloc = alloc ++ matches
+  def allocp: Alloc = ( alloc ++ matches ).toList.sortBy( _._1 ).toMap
 
   def is_stable: Boolean = {
     prefM == prefMp &&

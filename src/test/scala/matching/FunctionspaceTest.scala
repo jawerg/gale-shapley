@@ -20,7 +20,7 @@ class FunctionspaceTest extends FunSuite {
       4 -> List( 3, 2, 1, 4 )
     )
     assert(
-      GaleShapleySolver( prefM, prefW ).toList.sortBy( _._1 ).toMap
+      GaleShapleySolver( prefM, prefW )
         === Map( 1 -> 3, 2 -> 4, 3 -> 1, 4 -> 2 )
     )
   }
@@ -39,8 +39,8 @@ class FunctionspaceTest extends FunSuite {
       4 -> List( 3, 2, 1, 4 )
     )
     assert(
-      GaleShapleySolver( prefM, prefW ).toList.sortBy( _._1 ).toMap
-        === GaleShapleySolver( prefW, prefM ).toList.sortBy( _._1 ).toMap
+      GaleShapleySolver( prefM, prefW )
+        === GaleShapleySolver( prefW, prefM )
     )
   }
 
