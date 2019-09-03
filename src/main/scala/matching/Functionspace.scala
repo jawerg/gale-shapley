@@ -11,8 +11,7 @@ object Functionspace {
   }
 
   def GaleShapleySolver( prefM: PMap, prefW: PMap ): Alloc = {
-    val alloc: Alloc = Map( )
-    val GSS0 = GaleShapleyState( prefM, prefW, alloc )
+    val GSS0 = GaleShapleyState( prefM, prefW )
     GaleShapleyIter( GSS0 )
   }
 }

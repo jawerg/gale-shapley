@@ -3,7 +3,7 @@ package matching
 import matching.TypeDef._
 
 // The tail-recursive implementation requires a Game State.
-case class GaleShapleyState( prefM: PMap, prefW: PMap, alloc: Alloc ) {
+case class GaleShapleyState( prefM: PMap, prefW: PMap, alloc: Alloc = Map( ) ) {
 
   /////////////////////////////////////////////////////////////////////////////
   // Define Boys and Girls to encapsulate their primitive actions in the game.
