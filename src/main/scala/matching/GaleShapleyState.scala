@@ -2,29 +2,15 @@ package matching
 
 import matching.TypeDef._
 
-trait Player {
-  val id: PID
-}
-
-case class Boy( id: PID, plan: Plan ) extends Player {
+case class Boy( id: PID, plan: Plan ) {
   def is_searching( alloc: Alloc ): Boolean = {
     plan.nonEmpty &&
       !alloc.values.toList.contains( id )
   }
-  def proposes_to( alloc: Alloc ): PID = {
-    if ( is_searching( alloc ) ) plan.head // propose to next candidate.
-    else { // or propose to current match for implementational reasons.
-      val alloc_inv = alloc.toList.map( _.swap ).toMap
-      alloc_inv( id )
-    }
-  }
-  def future_plan( alloc: Alloc ): Plan = {
-    if ( is_searching( alloc ) ) plan.tail
-    else plan
-  }
+  def proposes_to: PID = plan.head
 }
 
-case class Girl( id: PID, pref: Pref, queue: Proposals = Nil ) extends Player {
+case class Girl( id: PID, pref: Pref, queue: Proposals = Nil ) {
   def valid_queue: List[ PID ] = pref.filter( queue.contains( _ ) )
   def has_valid_proposal: Boolean = valid_queue.nonEmpty
   def deferred_acceptance_of: PID = valid_queue.head
@@ -55,7 +41,7 @@ case class GaleShapleyState( prefM: PMap, prefW: PMap, alloc: Alloc ) {
 
   def matches: Alloc = {
     hunters
-      .map( boy => Proposal( boy.id, boy.proposes_to( alloc ) ) )
+      .map( boy => Proposal( boy.id, boy.proposes_to ) )
       .groupBy( _.girl )
       .view
       .mapValues( _.map( _.boy ) )
