@@ -2,40 +2,45 @@ package matching
 
 import matching.TypeDef._
 
-case class Boy( id: PID, plan: Plan ) {
-  def is_searching( alloc: Alloc ): Boolean = {
-    plan.nonEmpty &&
-      !alloc.values.toList.contains( id )
-  }
-  def proposes_to: PID = plan.head
-}
-
-case class Girl( id: PID, pref: Pref, queue: Proposals = Nil ) {
-  def valid_queue: List[ PID ] = pref.filter( queue.contains( _ ) )
-  def has_valid_proposal: Boolean = valid_queue.nonEmpty
-  def deferred_acceptance_of: PID = valid_queue.head
-}
-
-case class Proposal( boy: PID, girl: PID )
-
 // The tail-recursive implementation requires a Game State.
 case class GaleShapleyState( prefM: PMap, prefW: PMap, alloc: Alloc ) {
 
-  // Generate objects from inputs.
+  /////////////////////////////////////////////////////////////////////////////
+  // Define Boys and Girls to encapsulate their primitive actions in the game.
+  case class Boy( id: PID, plan: Plan ) {
+    def is_searching: Boolean = {
+      plan.nonEmpty &
+        !alloc.values.toList.contains( id )
+    }
+    def proposes_to: PID = plan.head
+  }
+
+  case class Girl( id: PID, pref: Pref, queue: Proposals = Nil ) {
+    def valid_queue: List[ PID ] = pref.filter( queue.contains( _ ) )
+    def has_valid_proposal: Boolean = valid_queue.nonEmpty
+    def deferred_acceptance_of: PID = valid_queue.head
+  }
+
+  case class Proposal( boy: PID, girl: PID )
+
+  /////////////////////////////////////////////////////////////////////////////
+  // Translate problem description into internal objects.
   lazy val boys: List[ Boy ] = prefM.toList.map( x => Boy( x._1, x._2 ) )
   lazy val girls: List[ Girl ] = prefW.toList.map( x => Girl( x._1, x._2 ) )
 
-  def hunters: List[ Boy ] = boys.filter( _.is_searching( alloc ) )
-
-  // In order to append to queue, we need to represent the current allocations
-  // as a List that matches None to an empty List.
+  /////////////////////////////////////////////////////////////////////////////
+  // Method definitions
+  def hunters: List[ Boy ] = boys.filter( _.is_searching )
+  def optional_match( pid: PID ): List[ PID ] = {
+    alloc.get( pid ) match {
+      case Some( y ) => List( y )
+      case _ => Nil
+    }
+  }
   def alloc_listmap: Map[ PID, List[ PID ] ] = {
     prefW
       .keySet
-      .map( x => (x, alloc.get( x ) match {
-        case Some( y ) => List( y )
-        case _ => Nil
-      }) )
+      .map( gid => (gid, optional_match( gid )) )
       .toMap
   }
 
