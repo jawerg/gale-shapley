@@ -6,7 +6,7 @@ object Functionspace {
 
   @scala.annotation.tailrec
   def GaleShapleyIter( gss: GaleShapleyState ): Alloc = {
-    if ( gss.is_stable ) gss.alloc
+    if ( gss.is_converged ) gss.alloc
     else GaleShapleyIter( GaleShapleyState( gss.prefMp, gss.prefW, gss.allocp ) )
   }
 

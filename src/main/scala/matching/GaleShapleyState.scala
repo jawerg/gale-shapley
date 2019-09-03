@@ -69,8 +69,24 @@ case class GaleShapleyState( prefM: PMap, prefW: PMap, alloc: Alloc ) {
 
   def allocp: Alloc = ( alloc ++ matches ).toList.sortBy( _._1 ).toMap
 
-  def is_stable: Boolean = {
+  def is_converged: Boolean = {
     prefM == prefMp &&
       alloc == allocp
+  }
+
+  // Brute Force Search for possible improvements
+  // Note: Only use on plain setup.
+  def improvements: List[ (PID, PID) ] = {
+    val alloc_b = alloc.toList.map( _.swap ).toMap // allocations from boy POV
+    for {
+      g <- girls
+      b <- boys
+      if g.pref.indexOf( b.id ) < g.pref.indexOf( alloc( g.id ) ) &
+        b.plan.indexOf( g.id ) < b.plan.indexOf( alloc_b( b.id ) )
+    } yield (g.id, b.id)
+  }
+  def is_stable: Boolean = {
+    if ( improvements.isEmpty ) true
+    else false
   }
 }
